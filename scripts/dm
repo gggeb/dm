@@ -13,7 +13,7 @@ case $confirmation in
 esac
 
 usage() {
-	echo "USAGE: dm [-h, --help] [-o, --output-dir <DIR>]"
+	echo "USAGE: dm [-h, --help] [-o, --output-dir <DIR>] [SOURCE]"
 }
 
 OUTPUT_DIR=".out"
@@ -28,9 +28,9 @@ elif [ "$1" = "-o" ] || [ "$1" = "--output-dir" ]; then
 		echo "no output directory provided! aborting!" 1>&2
 		exit
 	fi
-elif [ ! "$1" = "" ]; then
-	echo "invalid argument '$1'! aborting!" 1>&2
-	exit
+elif [ -f "$1" ]; then
+	echo "sourcing file '$1'"
+	. $1
 fi
 
 SER="ser"
