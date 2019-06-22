@@ -9,10 +9,12 @@ the rendered files are then all symlinked into the parent directory.
 
 ser
 ---
-takes an input and replaces `{environment_variables}` with their values.
+takes an input and replaces `~#environment_variables#~` with their values.
 ```
-{HOME} -> /home/username
-{{HOME}} -> {HOME}
+~#HOME#~ -> /home/username
+~~#HOME#~~ -> ~#HOME#~
+~~~#HOME#~~~ -> ~/home/username~
+~#~#HOME#~#~ -> ~#/home/username#~
 ```
 
 installing

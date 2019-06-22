@@ -51,7 +51,7 @@ fn main() {
             } else {
                 let n = (cap[1].len() - 1) / 2;
                 if let Some(value) = environment.get(&cap[2]) {
-                    format!("{}#{}#{}",
+                    format!("{}{}{}",
                             repeat('~', n),
                             value,
                             repeat('~', n))
