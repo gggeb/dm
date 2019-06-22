@@ -33,7 +33,7 @@ fn main() {
         environment
     };
 
-    let r = Regex::new(r"(\{+)([a-zA-Z0-9-_]+)(\}+)").unwrap();
+    let r = Regex::new(r"(~+)#([a-zA-Z-_]+)#(~+)").unwrap();
 
     let repeat = |c: char, n: usize| -> String {
         std::iter::repeat(c).take(n).collect()
@@ -44,17 +44,17 @@ fn main() {
         if cap[1].len() == cap[3].len() {
             if cap[1].len() % 2 == 0 {
                 let n = cap[1].len() / 2;
-                format!("{}{}{}",
-                        repeat('{', n),
+                format!("{}#{}#{}",
+                        repeat('~', n),
                         &cap[2],
-                        repeat('}', n))
+                        repeat('~', n))
             } else {
                 let n = (cap[1].len() - 1) / 2;
                 if let Some(value) = environment.get(&cap[2]) {
-                    format!("{}{}{}",
-                            repeat('{', n),
+                    format!("{}#{}#{}",
+                            repeat('~', n),
                             value,
-                            repeat('}', n))
+                            repeat('~', n))
                 } else {
                     error = Some(
                         format!("environment variable '{}' does not exist!",
@@ -63,7 +63,7 @@ fn main() {
                 }
             }
         } else {
-            error = Some("mismatching braces!".to_string());
+            error = Some("mismatched formatting!".to_string());
             "".to_string()
         }
     });

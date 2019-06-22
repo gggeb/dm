@@ -1,5 +1,17 @@
 #!/bin/sh
 
+read -p "is this directory [`pwd`] correct? (y/N): " confirmation
+
+case $confirmation in
+	[yY][eE][sS]|[yY])
+		echo "continuing"
+		;;
+	*)
+		echo "aborting!"
+		exit
+		;;
+esac
+
 usage() {
 	echo "USAGE: dm [-h, --help] [-o, --output-dir <DIR>]"
 }
@@ -24,7 +36,7 @@ fi
 SER="ser"
 
 echo "checking for 'ser'"
-if [ "$(command -v ser)" = "" ]; then
+if [ "`command -v ser`" = "" ]; then
 	if [ -x "./ser" ]; then
 		SER="./ser"
 	else
@@ -49,13 +61,13 @@ for dir in */; do
 	cp -a $dir $OUTPUT_DIR
 done
 
-entries=$(find "$OUTPUT_DIR/")
+entries=`find "$OUTPUT_DIR/"`
 for entry in $entries; do
 	if [ -f $entry ]; then
 		echo "generating '$entry'"
-		$SER "$(cat $entry)" > $entry
+		$SER "`cat $entry`" > $entry
 	fi
 done
 
 echo "symlinking generated files"
-cp -rs $(pwd)/$OUTPUT_DIR/ ../
+cp -rs `pwd`/$OUTPUT_DIR/ ../

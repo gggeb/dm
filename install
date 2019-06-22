@@ -5,9 +5,9 @@ if [ ! -f "./INSTALL_PREFIX" ]; then
 	exit
 fi
 
-INSTALL_PREFIX="$(cat ./INSTALL_PREFIX)"
+INSTALL_PREFIX="`cat ./INSTALL_PREFIX`"
 
-if [ ! "$(command -v cargo)" = "" ]; then
+if [ ! "`command -v cargo`" = "" ]; then
 	echo "-- cargo found"
 else
 	echo "cargo required to compile ser! aborting!" 1>&2
