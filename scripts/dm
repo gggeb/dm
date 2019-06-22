@@ -1,0 +1,61 @@
+#!/bin/sh
+
+usage() {
+	echo "USAGE: dm [-h, --help] [-o, --output-dir <DIR>]"
+}
+
+OUTPUT_DIR=".out"
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+	usage
+	exit
+elif [ "$1" = "-o" ] || [ "$1" = "--output-dir" ]; then
+	if [ ! "$2" = "" ]; then
+		OUTPUT_DIR="$2"
+	else
+		echo "no output directory provided! aborting!" 1>&2
+		exit
+	fi
+elif [ ! "$1" = "" ]; then
+	echo "invalid argument '$1'! aborting!" 1>&2
+	exit
+fi
+
+SER="ser"
+
+echo "checking for 'ser'"
+if [ "$(command -v ser)" = "" ]; then
+	if [ -x "./ser" ]; then
+		SER="./ser"
+	else
+		echo "'ser' not found! aborting!" 1>&2
+		exit
+	fi
+fi
+echo "found 'ser'"
+
+if [ -d "$OUTPUT_DIR" ]; then
+	echo "deleting previous output"
+	rm -r $OUTPUT_DIR
+fi
+
+echo "deleting broken symlinks"
+find -L ../ -type l -exec rm {} +
+
+mkdir $OUTPUT_DIR
+
+echo "duplicating directory tree"
+for dir in */; do
+	cp -a $dir $OUTPUT_DIR
+done
+
+entries=$(find "$OUTPUT_DIR/")
+for entry in $entries; do
+	if [ -f $entry ]; then
+		echo "generating '$entry'"
+		$SER "$(cat $entry)" > $entry
+	fi
+done
+
+echo "symlinking generated files"
+cp -rs $(pwd)/$OUTPUT_DIR/ ../

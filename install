@@ -1,0 +1,31 @@
+#!/bin/sh
+
+if [ ! -f "./INSTALL_PREFIX" ]; then
+	echo "install prefix not defined! aborting!" 1>&2
+	exit
+fi
+
+INSTALL_PREFIX="$(cat ./INSTALL_PREFIX)"
+
+if [ ! "$(command -v cargo)" = "" ]; then
+	echo "-- cargo found"
+else
+	echo "cargo required to compile ser! aborting!" 1>&2
+	exit
+fi
+
+echo "-- compiling ser"
+cd ser
+cargo build --release
+
+echo "-- copying executables"
+cp target/release/ser $INSTALL_PREFIX/ser
+cd ../scripts
+
+cp dm $INSTALL_PREFIX/dm
+
+echo "-- setting permissions"
+chmod +x $INSTALL_PREFIX/ser
+chmod +x $INSTALL_PREFIX/dm
+
+echo "-- done"

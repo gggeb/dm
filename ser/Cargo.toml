@@ -1,0 +1,8 @@
+[package]
+name = "ser"
+version = "1.0.0"
+authors = ["geb"]
+edition = "2018"
+
+[dependencies]
+regex = "1"
