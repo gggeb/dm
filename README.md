@@ -20,4 +20,4 @@ installing
 run `./install` after setting `INSTALL_PREFIX` accordingly.
 if installing as root, make sure sudo captures your environment so cargo can be found.
 
-use `./deinstall` to deinstall (make sure `INSTALL_PREFIX` is the same as it was when you installed), and `./clean` to clean.
+use `./deinstall` to deinstall and make sure `INSTALL_PREFIX` is the same as it was when you installed.
