@@ -1,6 +1,6 @@
 dm - dotfile manager
 ====================
-a tool for generating and linking .files.
+a tool for rendering and linking .files
 
 first, the program deletes its previous output and deletes all broken symlinks recursively in the parent directory.
 next the directory tree is duplicated, excluding first folder, such that `nvim/.config/nvim` becomes `.config/nvim`.
