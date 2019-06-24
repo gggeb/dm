@@ -1,17 +1,5 @@
 #!/bin/sh
 
-read -p "is this directory [`pwd`] correct? (y/N): " confirmation
-
-case $confirmation in
-	[yY][eE][sS]|[yY])
-		echo "continuing"
-		;;
-	*)
-		echo "aborting!"
-		exit
-		;;
-esac
-
 usage() {
 	echo "USAGE: dm [-h, --help] [-o, --output-dir <DIR>] [SOURCE]"
 }
@@ -32,6 +20,18 @@ elif [ -f "$1" ]; then
 	echo "sourcing file '$1'"
 	. $1
 fi
+
+read -p "is this directory [`pwd`] correct? (y/N): " confirmation
+
+case $confirmation in
+	[yY][eE][sS]|[yY])
+		echo "continuing"
+		;;
+	*)
+		echo "aborting!"
+		exit
+		;;
+esac
 
 SER="ser"
 
