@@ -10,15 +10,20 @@ fn usage() {
 }
 
 fn main() {
-    let mut args = env::args();
+    let mut args = env::args_os();
     args.next();
 
-    let input = if let Some(arg) = args.next() {
-        if &arg == "-h" || &arg == "--help" {
-            usage();
-            return;
+    let input = if let Some(arg_os) = args.next() {
+        if let Ok(arg) = arg_os.into_string() {
+            if &arg == "-h" || &arg == "--help" {
+                usage();
+                return;
+            } else {
+                arg
+            }
         } else {
-            arg
+            eprintln!("unable to parse input!");
+            return;
         }
     } else {
         eprintln!("no input provided!");

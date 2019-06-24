@@ -1,24 +1,49 @@
 #!/bin/sh
 
 usage() {
-	echo "USAGE: dm [-h, --help] [-o, --output-dir <DIR>] [SOURCE]"
+	echo "USAGE: dm [-h, --help] [-a,--allow-non-text] [-o, --output-dir <DIR>] [SOURCE]"
 }
 
 OUTPUT_DIR=".out"
+ONLY_TEXT=true
+FILE_TO_SOURCE=""
 
-if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-	usage
-	exit
-elif [ "$1" = "-o" ] || [ "$1" = "--output-dir" ]; then
-	if [ ! "$2" = "" ]; then
-		OUTPUT_DIR="$2"
-	else
-		echo "no output directory provided! aborting!" 1>&2
-		exit
-	fi
-elif [ -f "$1" ]; then
-	echo "sourcing file '$1'"
-	. $1
+while [ "$#" -gt 0 ]; do
+	case $1 in
+		-h | --help)
+			usage
+			exit
+			;;
+		-a | --allow-non-text)
+			ONLY_TEXT=false
+			;;
+		-o | --output-dir)
+			if [ ! "$2" = "" ]; then
+				OUTPUT_DIR="$2"
+				shift 2
+			else
+				echo "no output directory provided! aborting!" 1>&2
+				exit
+			fi
+			;;
+		*)
+			if [ "$FILE_TO_SOURCE" = "" ]; then
+				FILE_TO_SOURCE="$1"
+			else
+				echo "invalid argument '$1'! aborting!" 1>%&2
+				exit
+			fi
+			;;
+	esac
+	shift
+done
+
+echo "output directory: $OUTPUT_DIR"
+echo "disallow non-text files: $ONLY_TEXT"
+
+if [ ! "$FILE_TO_SOURCE" = "" ]; then
+	echo "sourcing file '$FILE_TO_SOURCE'"
+	. $FILE_TO_SOURCE
 fi
 
 read -p "is this directory [`pwd`] correct? (y/N): " confirmation
@@ -61,11 +86,14 @@ for dir in */; do
 	cp -a $dir $OUTPUT_DIR
 done
 
-entries=`find "$OUTPUT_DIR/"`
-for entry in $entries; do
+for entry in `find $OUTPUT_DIR/`; do
 	if [ -f $entry ]; then
-		echo "generating '$entry'"
-		$SER "`cat $entry`" > $entry
+		if file --mime-type $entry | grep -q "^.*: text/.*" || [ $ONLY_TEXT = false ]; then
+			echo "generating '$entry'"
+			$SER "`cat $entry`" > $entry
+		else
+			echo "skipping '$entry'"
+		fi
 	fi
 done
 
