@@ -46,7 +46,7 @@ if [ ! "$FILE_TO_SOURCE" = "" ]; then
 	. $FILE_TO_SOURCE
 fi
 
-read -p "is this directory [`pwd`] correct? (y/N): " confirmation
+read -p "is this directory [$(pwd)] correct? (y/N): " confirmation
 
 case $confirmation in
 	[yY][eE][sS]|[yY])
@@ -61,7 +61,7 @@ esac
 SER="ser"
 
 echo "checking for 'ser'"
-if [ "`command -v ser`" = "" ]; then
+if [ "$(command -v ser)" = "" ]; then
 	if [ -x "./ser" ]; then
 		SER="./ser"
 	else
@@ -86,11 +86,11 @@ for dir in */; do
 	cp -a $dir $OUTPUT_DIR
 done
 
-for entry in `find $OUTPUT_DIR/`; do
+for entry in $(find $OUTPUT_DIR/); do
 	if [ -f $entry ]; then
 		if file --mime-type $entry | grep -q "^.*: text/.*" || [ $ONLY_TEXT = false ]; then
 			echo "generating '$entry'"
-			$SER "`cat $entry`" > $entry
+			printf "%s" "$($SER "$entry")" > $entry
 		else
 			echo "skipping '$entry'"
 		fi
@@ -98,4 +98,4 @@ for entry in `find $OUTPUT_DIR/`; do
 done
 
 echo "symlinking generated files"
-cp -rs `pwd`/$OUTPUT_DIR/ ../
+cp -rs $(pwd)/$OUTPUT_DIR/ ../

@@ -1,34 +1,56 @@
 use std::collections::HashMap;
 use std::env;
+use std::fs::File;
+use std::io::{self, Read};
+use std::process;
 
 use regex::{Captures, Regex};
 
 const PROG_NAME: &str = "ser";
 
 fn usage() {
-    println!("USAGE: {} [-h, --help] <INPUT>", PROG_NAME);
+    println!("USAGE: {} [-h, --help] [FILE]", PROG_NAME);
+}
+
+fn exit_err(output: &str) -> ! {
+    eprintln!("{}", output);
+    process::exit(1)
 }
 
 fn main() {
     let mut args = env::args_os();
     args.next();
 
-    let input = if let Some(arg_os) = args.next() {
+    let mut buffer = String::new();
+    let get_from_stdin = |buffer: &mut String| {
+        if let Err(_) = io::stdin().read_to_string(buffer) {
+            exit_err("unable to read from stdin!");
+        }
+    };
+
+    if let Some(arg_os) = args.next() {
         if let Ok(arg) = arg_os.into_string() {
             if &arg == "-h" || &arg == "--help" {
                 usage();
                 return;
+            } else if &arg == "-" {
+                get_from_stdin(&mut buffer);
             } else {
-                arg
+                if let Ok(mut handle) = File::open(&arg) {
+                    if let Err(_) = handle.read_to_string(&mut buffer) {
+                        exit_err("unable to read from file!");
+                    }
+                } else {
+                    exit_err("unable to open file!");
+                }
             }
         } else {
-            eprintln!("unable to parse input!");
-            return;
+            exit_err("unable to parse input!");
         }
     } else {
-        eprintln!("no input provided!");
-        return;
-    };
+        get_from_stdin(&mut buffer);
+    }
+    let buffer = buffer;
 
     let environment = {
         let mut environment = HashMap::new();
@@ -45,7 +67,7 @@ fn main() {
     };
 
     let mut error = None;
-    let output = r.replace_all(&input, |cap: &Captures| -> String {
+    let output = r.replace_all(&buffer, |cap: &Captures| -> String {
         if cap[1].len() == cap[3].len() {
             if cap[1].len() % 2 == 0 {
                 let n = cap[1].len() / 2;
@@ -74,9 +96,8 @@ fn main() {
     });
 
     if let Some(err) = error {
-        eprintln!("{}", err);
-        return;
+        exit_err(&err);
     }
 
-    println!("{}", output);
+    print!("{}", output);
 }
