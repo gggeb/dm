@@ -5,10 +5,10 @@ if [ ! -f "./INSTALL_PREFIX" ]; then
     exit
 fi
 
-INSTALL_PREFIX="`cat ./INSTALL_PREFIX`"
+INSTALL_PREFIX="$(cat ./INSTALL_PREFIX)"
 
 echo "-- deleting executables"
-rm $INSTALL_PREFIX/ser
-rm $INSTALL_PREFIX/dm
+rm "$INSTALL_PREFIX/ser"
+rm "$INSTALL_PREFIX/dm"
 
 echo "-- done"

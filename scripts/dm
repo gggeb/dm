@@ -46,7 +46,7 @@ if [ ! "$FILE_TO_SOURCE" = "" ]; then
     . "$FILE_TO_SOURCE"
 fi
 
-echo -n "is this directory [$(pwd)] correct? (y/N): "
+printf "is this directory [$(pwd)] correct? (y/N): "
 read -r confirmation
 
 case $confirmation in
@@ -80,7 +80,7 @@ fi
 echo "deleting broken symlinks"
 find -L ../ -type l -exec rm {} +
 
-mkdir $OUTPUT_DIR
+mkdir "$OUTPUT_DIR"
 
 echo "duplicating directory tree"
 for dir in */; do

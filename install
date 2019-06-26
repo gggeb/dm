@@ -5,9 +5,9 @@ if [ ! -f "./INSTALL_PREFIX" ]; then
     exit
 fi
 
-INSTALL_PREFIX="`cat ./INSTALL_PREFIX`"
+INSTALL_PREFIX="$(cat ./INSTALL_PREFIX)"
 
-if [ ! "`command -v cargo`" = "" ]; then
+if [ ! "$(command -v cargo)" = "" ]; then
     echo "-- cargo found"
 else
     echo "cargo required to compile ser! aborting!" 1>&2
@@ -19,13 +19,13 @@ cd ser
 cargo build --release
 
 echo "-- copying executables"
-cp target/release/ser $INSTALL_PREFIX/ser
+cp target/release/ser "$INSTALL_PREFIX/ser"
 cd ../scripts
 
-cp dm $INSTALL_PREFIX/dm
+cp dm "$INSTALL_PREFIX/dm"
 
 echo "-- setting permissions"
-chmod +x $INSTALL_PREFIX/ser
-chmod +x $INSTALL_PREFIX/dm
+chmod +x "$INSTALL_PREFIX/ser"
+chmod +x "$INSTALL_PREFIX/dm"
 
 echo "-- done"
