@@ -46,7 +46,8 @@ if [ ! "$FILE_TO_SOURCE" = "" ]; then
     . "$FILE_TO_SOURCE"
 fi
 
-read -r "is this directory [$(pwd)] correct? (y/N): " confirmation
+echo -n "is this directory [$(pwd)] correct? (y/N): "
+read -r confirmation
 
 case $confirmation in
     [yY][eE][sS]|[yY])
@@ -98,4 +99,4 @@ for entry in $(find "$OUTPUT_DIR/"); do
 done
 
 echo "symlinking generated files"
-cp -rs "$(pwd)/"$OUTPUT_DIR/" ../
+cp -rs "$(pwd)/$OUTPUT_DIR/" ../
