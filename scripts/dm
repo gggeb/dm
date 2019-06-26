@@ -43,10 +43,10 @@ echo "disallow non-text files: $ONLY_TEXT"
 
 if [ ! "$FILE_TO_SOURCE" = "" ]; then
     echo "sourcing file '$FILE_TO_SOURCE'"
-    . $FILE_TO_SOURCE
+    . "$FILE_TO_SOURCE"
 fi
 
-read -p "is this directory [$(pwd)] correct? (y/N): " confirmation
+read -r "is this directory [$(pwd)] correct? (y/N): " confirmation
 
 case $confirmation in
     [yY][eE][sS]|[yY])
@@ -73,7 +73,7 @@ echo "found 'ser'"
 
 if [ -d "$OUTPUT_DIR" ]; then
     echo "deleting previous output"
-    rm -r $OUTPUT_DIR
+    rm -r "$OUTPUT_DIR"
 fi
 
 echo "deleting broken symlinks"
@@ -83,14 +83,14 @@ mkdir $OUTPUT_DIR
 
 echo "duplicating directory tree"
 for dir in */; do
-    cp -a $dir $OUTPUT_DIR
+    cp -a "$dir" "$OUTPUT_DIR"
 done
 
-for entry in $(find $OUTPUT_DIR/); do
-    if [ -f $entry ]; then
-        if file --mime-type $entry | grep -q "^.*: text/.*" || [ $ONLY_TEXT = false ]; then
+for entry in $(find "$OUTPUT_DIR/"); do
+    if [ -f "$entry" ]; then
+        if file --mime-type "$entry" | grep -q "^.*: text/.*" || [ $ONLY_TEXT = false ]; then
             echo "generating '$entry'"
-            printf "%s" "$($SER "$entry")" > $entry
+            printf "%s" "$($SER "$entry")" > "$entry"
         else
             echo "skipping '$entry'"
         fi
@@ -98,4 +98,4 @@ for entry in $(find $OUTPUT_DIR/); do
 done
 
 echo "symlinking generated files"
-cp -rs $(pwd)/$OUTPUT_DIR/ ../
+cp -rs "$(pwd)/"$OUTPUT_DIR/" ../
