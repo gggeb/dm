@@ -1,7 +1,8 @@
 #!/bin/sh
 
 usage() {
-    echo "USAGE: dm [-h, --help] [-a,--allow-non-text] [-o, --output-dir <DIR>] [SOURCE]"
+    echo "USAGE: dm [-h, --help] [-a,--allow-non-text]"
+    echo "          [-o, --output-dir <DIR>] [SOURCE]"
 }
 
 OUTPUT_DIR=".out"
