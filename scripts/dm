@@ -5,6 +5,11 @@ usage() {
     echo "          [-o, --output-dir <DIR>] [SOURCE]"
 }
 
+fail() {
+    >&2 echo "$1"
+    exit
+}
+
 OUTPUT_DIR=".out"
 ONLY_TEXT=true
 FILE_TO_SOURCE=""
@@ -23,16 +28,14 @@ while [ "$#" -gt 0 ]; do
                 OUTPUT_DIR="$2"
                 shift 2
             else
-                echo "no output directory provided! aborting!" 1>&2
-                exit
+                fail "no output directory provided! aborting!"
             fi
             ;;
         *)
             if [ "$FILE_TO_SOURCE" = "" ]; then
                 FILE_TO_SOURCE="$1"
             else
-                echo "invalid argument '$1'! aborting!" 1>%&2
-                exit
+                fail "invalid argument '$1'! aborting!"
             fi
             ;;
     esac
@@ -67,8 +70,7 @@ if [ "$(command -v ser)" = "" ]; then
     if [ -x "./ser" ]; then
         SER="./ser"
     else
-        echo "'ser' not found! aborting!" 1>&2
-        exit
+        fail "'ser' not found! aborting!"
     fi
 fi
 echo "found 'ser'"
@@ -85,7 +87,7 @@ mkdir "$OUTPUT_DIR"
 
 echo "duplicating directory tree"
 for dir in */; do
-    cp -a "$dir" "$OUTPUT_DIR"
+    cp -a "$dir." "$OUTPUT_DIR"
 done
 
 for entry in $(find "$OUTPUT_DIR/"); do
@@ -100,4 +102,4 @@ for entry in $(find "$OUTPUT_DIR/"); do
 done
 
 echo "symlinking generated files"
-cp -rs "$(pwd)/$OUTPUT_DIR/" ../
+cp -rs "$(pwd)/$OUTPUT_DIR/." ../
